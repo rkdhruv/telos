@@ -2,7 +2,7 @@
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "Telos",
   "version": "0.1.0",
-  "identifier": "com.dhruv.telos",
+  "identifier": "io.github.rkdhruv.telos",
   "build": {
     "frontendDist": "../dist",
     "devUrl": "http://localhost:1420",
