@@ -5,6 +5,9 @@ src-tauri/target/
 # Build outputs
 dist/
 src-tauri/gen/
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
 
 # Environment
 .env
