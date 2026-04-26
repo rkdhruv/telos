@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+src-tauri/target/
+
+# Build outputs
+dist/
+src-tauri/gen/
+
+# Environment
+.env
+.env.local
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Private data
+*.sqlite
+*.sqlite-journal
+*.db
+src-tauri/data/
+
+# Logs
+*.log
+npm-debug.log*
