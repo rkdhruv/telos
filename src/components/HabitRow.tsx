@@ -19,11 +19,15 @@ import {
 } from "../lib/streaks";
 import { newId } from "../lib/ids";
 
+import { HabitGraph } from "./HabitGraph";
+
 interface Props {
   habit: Habit;
+  expanded: boolean;
+  onToggle: () => void;
 }
 
-export function HabitRow({ habit }: Props) {
+export function HabitRow({ habit, expanded, onToggle }: Props) {
   const queryClient = useQueryClient();
   const today = todayIsoDate();
   const queryKey = ["logs", habit.id] as const;
@@ -95,17 +99,21 @@ export function HabitRow({ habit }: Props) {
   const clearToday = () => deleteMutation.mutate({ date: today });
 
   return (
-    <li className="flex items-center justify-between gap-6 border-b border-border px-2 py-5 last:border-b-0">
-      <div className="min-w-0 flex-1">
-        <p className="truncate font-display text-lg text-text-primary">
-          {habit.name}
-        </p>
-        <p className="mt-1 text-xs text-text-tertiary">
-          <SummaryLine habit={habit} logs={logs} />
-        </p>
-      </div>
+    <li className="border-b border-border last:border-b-0">
+      <div
+        onClick={onToggle}
+        className="flex cursor-pointer items-center justify-between gap-6 px-2 py-5 transition-colors duration-300 ease-soft hover:bg-bg-subtle"
+      >
+        <div className="min-w-0 flex-1">
+          <p className="truncate font-display text-lg text-text-primary">
+            {habit.name}
+          </p>
+          <p className="mt-1 text-xs text-text-tertiary">
+            <SummaryLine habit={habit} logs={logs} />
+          </p>
+        </div>
 
-      <div className="shrink-0">
+        <div className="shrink-0" onClick={(e) => e.stopPropagation()}>
         {habit.type === "build" && (
           <BuildControls todaysLog={todaysLog} onSet={setStatus} />
         )}
@@ -132,7 +140,14 @@ export function HabitRow({ habit }: Props) {
             onClear={clearToday}
           />
         )}
+        </div>
       </div>
+
+      {expanded && (
+        <div className="px-2 pb-6">
+          <HabitGraph habit={habit} logs={logs} />
+        </div>
+      )}
     </li>
   );
 }

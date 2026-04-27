@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { HabitRow } from "../components/HabitRow";
@@ -6,6 +7,7 @@ import { useAppStore } from "../store/useAppStore";
 
 export function Home() {
   const setRoute = useAppStore((s) => s.setRoute);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const { data: habits = [], isLoading } = useQuery({
     queryKey: ["habits"],
     queryFn: listHabits,
@@ -38,7 +40,14 @@ export function Home() {
         ) : (
           <ul>
             {habits.map((h) => (
-              <HabitRow key={h.id} habit={h} />
+              <HabitRow
+                key={h.id}
+                habit={h}
+                expanded={expandedId === h.id}
+                onToggle={() =>
+                  setExpandedId((prev) => (prev === h.id ? null : h.id))
+                }
+              />
             ))}
           </ul>
         )}

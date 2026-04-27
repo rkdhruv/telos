@@ -71,3 +71,30 @@ export function weeklyBuildHits(logs: HabitLog[], today: Date): number {
 export function achieveTotal(logs: HabitLog[]): number {
   return logs.reduce((sum, l) => sum + (l.value ?? 0), 0);
 }
+
+/**
+ * Best quit streak: longest run of consecutive days without a miss between
+ * habit creation and `today`.
+ */
+export function bestQuitStreak(
+  logs: HabitLog[],
+  habit: Habit,
+  today: Date,
+): number {
+  const start = parseISO(habit.created_at);
+  const misses = logs
+    .filter((l) => l.status === "miss")
+    .map((l) => parseISO(l.date))
+    .sort((a, b) => a.getTime() - b.getTime());
+
+  let best = 0;
+  let cursor = start;
+  for (const m of misses) {
+    const days = Math.max(0, differenceInCalendarDays(m, cursor));
+    if (days > best) best = days;
+    cursor = m;
+  }
+  const tail = Math.max(0, differenceInCalendarDays(today, cursor));
+  if (tail > best) best = tail;
+  return best;
+}
