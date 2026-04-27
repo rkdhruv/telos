@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { AddHabitForm } from "../components/AddHabitForm";
-import { HabitRow } from "../components/HabitRow";
+import { HabitManageRow } from "../components/HabitManageRow";
 import {
   archiveHabit,
   createHabit,
@@ -131,7 +131,7 @@ export function Habits() {
         ) : (
           <ul className="mt-2">
             {active.map((h) => (
-              <HabitRow
+              <HabitManageRow
                 key={h.id}
                 habit={h}
                 onEdit={() => setEditing({ kind: "existing", id: h.id })}
@@ -151,7 +151,7 @@ export function Habits() {
           </h2>
           <ul className="mt-2 opacity-70">
             {archived.map((h: Habit) => (
-              <HabitRow
+              <HabitManageRow
                 key={h.id}
                 habit={h}
                 onEdit={() => setEditing({ kind: "existing", id: h.id })}

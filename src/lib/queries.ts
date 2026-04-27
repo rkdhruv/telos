@@ -146,6 +146,74 @@ export async function deleteHabit(id: string): Promise<void> {
   await db.execute("DELETE FROM habits WHERE id = ?", [id]);
 }
 
+// ---------- logs ----------
+
+export interface LogUpsertInput {
+  habit_id: string;
+  date: string;
+  status: LogStatus;
+  value?: number | null;
+  note?: string | null;
+}
+
+export async function listLogsForHabit(habitId: string): Promise<HabitLog[]> {
+  const db = await getDb();
+  return db.select<HabitLog[]>(
+    "SELECT * FROM logs WHERE habit_id = ? ORDER BY date ASC",
+    [habitId],
+  );
+}
+
+export async function upsertLog(input: LogUpsertInput): Promise<HabitLog> {
+  const db = await getDb();
+  const existing = await db.select<HabitLog[]>(
+    "SELECT * FROM logs WHERE habit_id = ? AND date = ? LIMIT 1",
+    [input.habit_id, input.date],
+  );
+  const created_at = nowIso();
+
+  if (existing[0]) {
+    await db.execute(
+      "UPDATE logs SET status = ?, value = ?, note = ? WHERE id = ?",
+      [input.status, input.value ?? null, input.note ?? null, existing[0].id],
+    );
+    const rows = await db.select<HabitLog[]>("SELECT * FROM logs WHERE id = ?", [
+      existing[0].id,
+    ]);
+    if (!rows[0]) throw new Error("Failed to read back updated log");
+    return rows[0];
+  }
+
+  const id = newId();
+  await db.execute(
+    `INSERT INTO logs (id, habit_id, date, status, value, note, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    [
+      id,
+      input.habit_id,
+      input.date,
+      input.status,
+      input.value ?? null,
+      input.note ?? null,
+      created_at,
+    ],
+  );
+  const rows = await db.select<HabitLog[]>("SELECT * FROM logs WHERE id = ?", [id]);
+  if (!rows[0]) throw new Error("Failed to read back created log");
+  return rows[0];
+}
+
+export async function deleteLogForDate(
+  habit_id: string,
+  date: string,
+): Promise<void> {
+  const db = await getDb();
+  await db.execute("DELETE FROM logs WHERE habit_id = ? AND date = ?", [
+    habit_id,
+    date,
+  ]);
+}
+
 // ---------- verses ----------
 
 export async function listVerses(): Promise<Verse[]> {

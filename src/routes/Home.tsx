@@ -1,43 +1,46 @@
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import {
-  listHabits,
-  listNonNegotiables,
-  listVerses,
-} from "../lib/queries";
+import { HabitRow } from "../components/HabitRow";
+import { listHabits } from "../lib/queries";
+import { useAppStore } from "../store/useAppStore";
 
 export function Home() {
-  const habits = useQuery({ queryKey: ["habits"], queryFn: listHabits });
-  const verses = useQuery({ queryKey: ["verses"], queryFn: listVerses });
-  const nonNegotiables = useQuery({
-    queryKey: ["non-negotiables"],
-    queryFn: listNonNegotiables,
+  const setRoute = useAppStore((s) => s.setRoute);
+  const { data: habits = [], isLoading } = useQuery({
+    queryKey: ["habits"],
+    queryFn: listHabits,
   });
 
   const today = format(new Date(), "EEEE, MMMM d");
-
-  const ready =
-    habits.data && verses.data && nonNegotiables.data
-      ? {
-          habits: habits.data.length,
-          verses: verses.data.length,
-          nonNegotiables: nonNegotiables.data.length,
-        }
-      : null;
 
   return (
     <main className="mx-auto w-full max-w-3xl px-10 py-12">
       <p className="font-display italic text-sm text-text-secondary">{today}</p>
 
-      <section className="mt-24 max-w-xl">
-        <h1 className="font-display text-2xl text-text-primary">Telos</h1>
-        <p className="mt-4 font-display italic text-base text-text-secondary">
-          A quiet space for the practices that shape a life.
-        </p>
-        {ready && (
-          <p className="mt-6 text-xs text-text-tertiary">
-            {ready.habits} habits · {ready.verses} verses · {ready.nonNegotiables} non-negotiables
+      <section className="mt-12">
+        {isLoading ? (
+          <p className="font-display italic text-sm text-text-tertiary">
+            Loading…
           </p>
+        ) : habits.length === 0 ? (
+          <div className="mt-12 max-w-lg">
+            <p className="font-display italic text-base text-text-secondary">
+              A quiet space for the practices that shape a life.
+            </p>
+            <button
+              type="button"
+              onClick={() => setRoute("habits")}
+              className="mt-6 text-sm text-text-secondary underline-offset-4 transition-colors duration-300 ease-soft hover:text-text-primary hover:underline"
+            >
+              Add your first habit →
+            </button>
+          </div>
+        ) : (
+          <ul>
+            {habits.map((h) => (
+              <HabitRow key={h.id} habit={h} />
+            ))}
+          </ul>
         )}
       </section>
     </main>
