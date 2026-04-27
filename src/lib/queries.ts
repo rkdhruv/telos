@@ -221,6 +221,24 @@ export async function listVerses(): Promise<Verse[]> {
   return db.select<Verse[]>("SELECT * FROM verses ORDER BY created_at ASC");
 }
 
+export async function addVerses(
+  verses: { text: string; reference: string | null }[],
+): Promise<void> {
+  if (verses.length === 0) return;
+  const db = await getDb();
+  for (const v of verses) {
+    await db.execute(
+      "INSERT INTO verses (id, text, reference, created_at) VALUES (?, ?, ?, ?)",
+      [newId(), v.text, v.reference, nowIso()],
+    );
+  }
+}
+
+export async function deleteVerse(id: string): Promise<void> {
+  const db = await getDb();
+  await db.execute("DELETE FROM verses WHERE id = ?", [id]);
+}
+
 // ---------- non-negotiables ----------
 
 export async function listNonNegotiables(): Promise<NonNegotiable[]> {

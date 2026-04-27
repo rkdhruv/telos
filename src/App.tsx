@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Sidebar } from "./components/Sidebar";
-import { ThemeToggle } from "./components/ThemeToggle";
+import { VerseWidget } from "./components/VerseWidget";
 import { Habits } from "./routes/Habits";
 import { Home } from "./routes/Home";
 import { Settings } from "./routes/Settings";
@@ -18,14 +18,14 @@ export default function App() {
     <div className="flex h-full">
       <Sidebar />
 
-      <div className="relative flex-1 overflow-y-auto">
-        <div className="absolute right-6 top-6 z-10">
-          <ThemeToggle />
-        </div>
+      <div className="relative flex-1 overflow-hidden">
+        <VerseWidget />
 
-        {route === "home" && <Home />}
-        {route === "habits" && <Habits />}
-        {route === "settings" && <Settings />}
+        <div className="h-full overflow-y-auto pr-72">
+          {route === "home" && <Home />}
+          {route === "habits" && <Habits />}
+          {route === "settings" && <Settings />}
+        </div>
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import { Home, ListChecks, Settings } from "lucide-react";
 import { useAppStore, type Route } from "../store/useAppStore";
+import { ThemeToggle } from "./ThemeToggle";
 
 interface NavItem {
   id: Route;
@@ -43,6 +44,10 @@ export function Sidebar() {
           );
         })}
       </nav>
+
+      <div className="mt-auto px-2">
+        <ThemeToggle />
+      </div>
     </aside>
   );
 }
