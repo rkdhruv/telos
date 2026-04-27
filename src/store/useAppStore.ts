@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 type Theme = "dark" | "light";
+export type Route = "home" | "habits" | "settings";
 
 const THEME_KEY = "telos.theme";
 
@@ -15,6 +16,9 @@ interface AppState {
   theme: Theme;
   setTheme: (theme: Theme) => void;
   toggleTheme: () => void;
+
+  route: Route;
+  setRoute: (route: Route) => void;
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -28,4 +32,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     const next: Theme = get().theme === "dark" ? "light" : "dark";
     get().setTheme(next);
   },
+
+  route: "home",
+  setRoute: (route) => set({ route }),
 }));
