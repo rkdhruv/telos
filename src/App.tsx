@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { NonNegotiablesSidebar } from "./components/NonNegotiablesSidebar";
 import { Sidebar } from "./components/Sidebar";
 import { VerseWidget } from "./components/VerseWidget";
 import { Habits } from "./routes/Habits";
@@ -17,6 +18,7 @@ export default function App() {
   return (
     <div className="flex h-full">
       <Sidebar />
+      <NonNegotiablesSidebar />
 
       <div className="relative flex-1 overflow-hidden">
         <VerseWidget />

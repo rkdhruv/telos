@@ -247,3 +247,74 @@ export async function listNonNegotiables(): Promise<NonNegotiable[]> {
     "SELECT * FROM non_negotiables WHERE archived_at IS NULL ORDER BY created_at ASC",
   );
 }
+
+export async function createNonNegotiable(text: string): Promise<NonNegotiable> {
+  const db = await getDb();
+  const id = newId();
+  const created_at = nowIso();
+  await db.execute(
+    "INSERT INTO non_negotiables (id, text, created_at) VALUES (?, ?, ?)",
+    [id, text, created_at],
+  );
+  const rows = await db.select<NonNegotiable[]>(
+    "SELECT * FROM non_negotiables WHERE id = ?",
+    [id],
+  );
+  if (!rows[0]) throw new Error("Failed to read back created non-negotiable");
+  return rows[0];
+}
+
+export async function updateNonNegotiable(id: string, text: string): Promise<void> {
+  const db = await getDb();
+  await db.execute("UPDATE non_negotiables SET text = ? WHERE id = ?", [text, id]);
+}
+
+export async function archiveNonNegotiable(id: string): Promise<void> {
+  const db = await getDb();
+  await db.execute("UPDATE non_negotiables SET archived_at = ? WHERE id = ?", [
+    nowIso(),
+    id,
+  ]);
+}
+
+// ---------- violations ----------
+
+export async function listAllViolations(): Promise<Violation[]> {
+  const db = await getDb();
+  return db.select<Violation[]>(
+    "SELECT * FROM violations ORDER BY date ASC, created_at ASC",
+  );
+}
+
+export async function addViolation(input: {
+  non_negotiable_id: string;
+  date: string;
+  note?: string | null;
+}): Promise<Violation> {
+  const db = await getDb();
+  const id = newId();
+  const created_at = nowIso();
+  await db.execute(
+    "INSERT INTO violations (id, non_negotiable_id, date, note, created_at) VALUES (?, ?, ?, ?, ?)",
+    [id, input.non_negotiable_id, input.date, input.note ?? null, created_at],
+  );
+  const rows = await db.select<Violation[]>(
+    "SELECT * FROM violations WHERE id = ?",
+    [id],
+  );
+  if (!rows[0]) throw new Error("Failed to read back created violation");
+  return rows[0];
+}
+
+export async function updateViolationNote(
+  id: string,
+  note: string | null,
+): Promise<void> {
+  const db = await getDb();
+  await db.execute("UPDATE violations SET note = ? WHERE id = ?", [note, id]);
+}
+
+export async function deleteViolation(id: string): Promise<void> {
+  const db = await getDb();
+  await db.execute("DELETE FROM violations WHERE id = ?", [id]);
+}

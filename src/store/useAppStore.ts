@@ -4,12 +4,20 @@ type Theme = "dark" | "light";
 export type Route = "home" | "habits" | "settings";
 
 const THEME_KEY = "telos.theme";
+const NN_OPEN_KEY = "telos.nonNegSidebarOpen";
 
 const readInitialTheme = (): Theme => {
   if (typeof window === "undefined") return "dark";
   const stored = window.localStorage.getItem(THEME_KEY);
   if (stored === "light" || stored === "dark") return stored;
   return "dark";
+};
+
+const readInitialNNOpen = (): boolean => {
+  if (typeof window === "undefined") return true;
+  const stored = window.localStorage.getItem(NN_OPEN_KEY);
+  if (stored === "false") return false;
+  return true;
 };
 
 interface AppState {
@@ -19,6 +27,9 @@ interface AppState {
 
   route: Route;
   setRoute: (route: Route) => void;
+
+  nonNegSidebarOpen: boolean;
+  toggleNonNegSidebar: () => void;
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -35,4 +46,11 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   route: "home",
   setRoute: (route) => set({ route }),
+
+  nonNegSidebarOpen: readInitialNNOpen(),
+  toggleNonNegSidebar: () => {
+    const next = !get().nonNegSidebarOpen;
+    window.localStorage.setItem(NN_OPEN_KEY, next ? "true" : "false");
+    set({ nonNegSidebarOpen: next });
+  },
 }));
