@@ -5,14 +5,21 @@ import { VerseWidget } from "./components/VerseWidget";
 import { Habits } from "./routes/Habits";
 import { Home } from "./routes/Home";
 import { Settings } from "./routes/Settings";
-import { useAppStore } from "./store/useAppStore";
+import { resolveTheme, useAppStore } from "./store/useAppStore";
 
 export default function App() {
   const theme = useAppStore((s) => s.theme);
   const route = useAppStore((s) => s.route);
 
   useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
+    const apply = () => {
+      document.documentElement.setAttribute("data-theme", resolveTheme(theme));
+    };
+    apply();
+    if (theme !== "system") return;
+    const mql = window.matchMedia("(prefers-color-scheme: dark)");
+    mql.addEventListener("change", apply);
+    return () => mql.removeEventListener("change", apply);
   }, [theme]);
 
   return (

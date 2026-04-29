@@ -318,3 +318,49 @@ export async function deleteViolation(id: string): Promise<void> {
   const db = await getDb();
   await db.execute("DELETE FROM violations WHERE id = ?", [id]);
 }
+
+// ---------- export / reset ----------
+
+export interface ExportPayload {
+  version: number;
+  exportedAt: string;
+  habits: Habit[];
+  logs: HabitLog[];
+  non_negotiables: NonNegotiable[];
+  violations: Violation[];
+  verses: Verse[];
+}
+
+export async function exportData(): Promise<ExportPayload> {
+  const db = await getDb();
+  const [habits, logs, nonNegotiables, violations, verses] = await Promise.all([
+    db.select<Habit[]>("SELECT * FROM habits ORDER BY created_at ASC"),
+    db.select<HabitLog[]>("SELECT * FROM logs ORDER BY date ASC, created_at ASC"),
+    db.select<NonNegotiable[]>(
+      "SELECT * FROM non_negotiables ORDER BY created_at ASC",
+    ),
+    db.select<Violation[]>(
+      "SELECT * FROM violations ORDER BY date ASC, created_at ASC",
+    ),
+    db.select<Verse[]>("SELECT * FROM verses ORDER BY created_at ASC"),
+  ]);
+  return {
+    version: 1,
+    exportedAt: nowIso(),
+    habits,
+    logs,
+    non_negotiables: nonNegotiables,
+    violations,
+    verses,
+  };
+}
+
+export async function clearAllData(): Promise<void> {
+  const db = await getDb();
+  // Order matters for FK cascades, though ON DELETE CASCADE would handle it.
+  await db.execute("DELETE FROM violations");
+  await db.execute("DELETE FROM logs");
+  await db.execute("DELETE FROM non_negotiables");
+  await db.execute("DELETE FROM habits");
+  await db.execute("DELETE FROM verses");
+}
