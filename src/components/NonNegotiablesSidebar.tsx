@@ -3,7 +3,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Archive,
   ChevronLeft,
-  ChevronRight,
   Pencil,
   Plus,
   Shield,
@@ -39,14 +38,6 @@ export function NonNegotiablesSidebar() {
           className="flex h-8 w-8 items-center justify-center rounded-sm text-text-tertiary transition-colors duration-300 ease-soft hover:bg-bg-subtle hover:text-text-primary"
         >
           <Shield strokeWidth={1.5} size={16} />
-        </button>
-        <button
-          type="button"
-          onClick={toggle}
-          aria-label="Expand"
-          className="mt-2 flex h-8 w-8 items-center justify-center rounded-sm text-text-tertiary transition-colors duration-300 ease-soft hover:bg-bg-subtle hover:text-text-primary"
-        >
-          <ChevronRight strokeWidth={1.5} size={14} />
         </button>
       </aside>
     );

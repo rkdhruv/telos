@@ -30,7 +30,7 @@ export default function App() {
       <div className="relative flex-1 overflow-hidden">
         <VerseWidget />
 
-        <div className="h-full overflow-y-auto pr-72">
+        <div className="h-full overflow-y-auto pr-80">
           {route === "home" && <Home />}
           {route === "habits" && <Habits />}
           {route === "settings" && <Settings />}

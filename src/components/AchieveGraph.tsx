@@ -147,7 +147,7 @@ export function AchieveGraph({ habit, logs }: Props) {
 
       {catchup !== null && (
         <p className="mt-4 font-display italic text-sm text-text-secondary">
-          {catchup.perDay} more {unit} per day to hit your deadline.
+          {catchup.perDay} {unit} per day to hit your deadline.
         </p>
       )}
     </GraphCard>

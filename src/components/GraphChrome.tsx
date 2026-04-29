@@ -75,7 +75,7 @@ export function GraphTooltip({
       : null;
 
   return (
-    <div className="rounded border border-border bg-bg-elevated px-3 py-2 shadow-sm">
+    <div className="rounded border border-border bg-bg-elevated px-3 py-2">
       <p className="font-display italic text-xs text-text-tertiary">{label}</p>
       <p className="mt-1 font-display text-sm text-text-primary">
         {typeof reality === "number" ? reality.toFixed(reality % 1 === 0 ? 0 : 1) : "—"}

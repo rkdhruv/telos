@@ -30,13 +30,19 @@ export function QuitGraph({ habit, logs }: Props) {
 
   return (
     <GraphCard>
-      <div className="flex items-baseline gap-3">
-        <p className="font-display text-2xl text-text-primary">{current}</p>
-        <p className="text-sm text-text-secondary">
-          {current === 1 ? "day clean" : "days clean"}
-        </p>
-      </div>
-      <p className="mt-1 text-xs text-text-tertiary">best: {best}</p>
+      {current === 0 ? (
+        <p className="font-display italic text-lg text-text-secondary">Day one.</p>
+      ) : (
+        <div className="flex items-baseline gap-3">
+          <p className="font-display text-2xl text-text-primary">{current}</p>
+          <p className="text-sm text-text-secondary">
+            {current === 1 ? "day clean" : "days clean"}
+          </p>
+        </div>
+      )}
+      {best > 0 && (
+        <p className="mt-1 text-xs text-text-tertiary">best: {best}</p>
+      )}
 
       <div className="mt-6 overflow-x-auto">
         <Heatmap grid={grid} />

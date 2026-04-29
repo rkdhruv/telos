@@ -172,7 +172,9 @@ function SummaryLine({ habit, logs }: { habit: Habit; logs: HabitLog[] }) {
 
   if (habit.type === "quit") {
     const streak = quitStreak(logs, habit, today);
-    return <>{streak} day streak</>;
+    if (streak === 0) return <>Day one</>;
+    if (streak === 1) return <>1 day clean</>;
+    return <>{streak} days clean</>;
   }
 
   if (habit.type === "achieve") {
